@@ -1,9 +1,6 @@
 ﻿#include <iostream>
 using namespace std;
 
-/*Без деструктора всё работает!
-срабатывает раньше времени*/
-
 class Matrica 
 {
     int stroka, stolbez;
