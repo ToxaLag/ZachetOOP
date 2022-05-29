@@ -1,12 +1,14 @@
 ﻿#include <iostream>
 using namespace std;
 
-
 class Matrica 
 {
     int stroka, stolbez,rang;
     double deter;
     double **mas;
+    
+
+    
 public:
     Matrica(int stroka_, int stolbez_, int chislo = 0); //конструктор
     Matrica(const Matrica& ob); //конструктор коппий
@@ -36,6 +38,7 @@ public:
                 tmp.mas[i][j] = this->mas[i][j] + r_ob.mas[i][j];
             }
         }
+        tmp.DeterGaus();
         return tmp;
     }
     Matrica operator-(Matrica r_ob)
@@ -55,6 +58,7 @@ public:
                 tmp.mas[i][j] = this->mas[i][j] - r_ob.mas[i][j];
             }
         }
+        tmp.DeterGaus();
         return tmp;
     }
     Matrica operator=(const Matrica& r_ob)
@@ -62,7 +66,7 @@ public:
         for (int i = 0; i < stroka; ++i)
             delete[] mas[i];
         delete[] mas;
-        this->stroka = r_ob.stroka; this->stolbez = r_ob.stolbez;
+        this->stroka = r_ob.stroka; this->stolbez = r_ob.stolbez; this->deter = r_ob.deter; this->rang = r_ob.rang;
         mas = new double* [stroka];
         for (int i = 0; i < stroka; i++)
             mas[i] = new double[stolbez];
@@ -85,6 +89,7 @@ public:
             for (int j = 0; j < r_ob.stolbez; j++)
                 for (int k = 0; k < this->stolbez; k++)
                     tmp.mas[i][j] += this->mas[i][k] * r_ob.mas[k][j];
+        tmp.DeterGaus();
         return tmp;
     }  // умножение матрицы на матрицу конец;
     Matrica operator*(double r_ob)
@@ -93,6 +98,7 @@ public:
         for (int i = 0; i < tmp.stroka; i++)
             for (int j = 0; j < tmp.stolbez; j++)
                 tmp.mas[i][j] = this->mas[i][j] * r_ob;
+        tmp.DeterGaus();
         return tmp;
     }
     double operator()(int stroka_ , int stolbez_);
@@ -160,16 +166,109 @@ public:
                 }
         return *this;
     }
+    double GetDeter()
+    {
+        DeterGaus();
+        return deter;
+    }
+    Matrica Revers()
+    {
+        if ((stroka != stolbez) || (deter == 0))
+        {
+            cout << "Нет обратной матрицы";
+            return *this;
+        }
+    }
+    Matrica SwapStr(int stroka1, int stroka2)
+    {
+        double chislo;
+        for (int j = 0; j < stolbez; j++)
+        {
+            chislo = mas[stroka1-1][j];
+            mas[stroka1-1][j] = mas[stroka2-1][j];
+            mas[stroka2-1][j] = chislo;
+        }
+        return *this;
+    }
+    Matrica SwapStl(int stolbez1, int stolbez2)
+    {
+        double chislo;
+        for (int i = 0; i < stroka; i++)
+        {
+            chislo = mas[stolbez1-1][i];
+            mas[stolbez1-1][i] = mas[stolbez2-1][i];
+            mas[stolbez2-1][i] = chislo;
+        }
+        return *this;
+    }
+    double DeterGaus()
+    {
+        if (stroka != stolbez)
+        {
+            deter = 999333;
+            return deter;
+        }
+        deter = 1;
+        Matrica tmp(stroka, stroka);
+        tmp = *this;
+        double ches;
+        //проверка на нулевые стоки/столбцы
+        for (int i = 0; i < stroka; i++)
+        {
+            for (int j = 0; j < stroka; j++)
+            {
+                if (tmp.mas[i][j] != 0 || tmp.mas[j][i] != 0)
+                    break;
+                if ((j == stroka - 1) && (tmp.mas[i][j] == 0))
+                {
+                    deter = 0;
+                    return deter;
+                }
+            }
+        }
+        //конец проверки
+        //проверка на ненулевые элементы на глав диагонали + замена если возможно
+        int notNullMain = 1;
+        for (int i = 0; i < stroka; i++)
+        {
+            while (tmp.mas[i][i] == 0)
+            {
+                tmp.SwapStl(i, notNullMain);
+                notNullMain++;
+            }
+        }
+        //конец проверки
+        for (int k = 0; k < stroka; k++)
+            for (int i = k + 1; i < stroka; i++)
+            {
+                ches = -tmp.mas[i][k] / tmp.mas[k][k];
+                for (int j = 0; j < stroka; j++)
+                    tmp.mas[i][j] += tmp.mas[k][j] * ches;
+            }
+        for (int i = 0; i < stroka; i++)
+            deter *= tmp.mas[i][i];
+        return deter;
+    }
+    //int Rang()
+    //{
+    //    rang = min(stroka, stolbez);
+    //    for (int i = 0; i < stroka; ++i)
+    //    {
+    //        for (int j = 0; j < stolbez; ++j)
+    //            return 0; //дописать
+    //    }
+    //}
+
 };
 
 int main()
 {
     setlocale(LC_ALL, "Rus");
     Matrica a(3, 3, 5);
-    cin >> a;
-    cout << a;
-    a.Tranpon();
-    cout << a;
+    Matrica b(3, 3, 4);
+    cin >> b;
+    cout << b.GetDeter();
+
 }
 
 Matrica::Matrica(int stroka_, int stolbez_, int chislo)  // конструктор *начало
@@ -194,11 +293,13 @@ Matrica::Matrica(int stroka_, int stolbez_, int chislo)  // конструкто
     for (int i = 0; i < stroka; i++)
         for (int j = 0; j < stolbez; j++)
             mas[i][j] = chislo;
+    deter = 0;
+    rang = 1;
 }                                                       // конструктор *конец
 
 Matrica::Matrica(const Matrica& ob)
 {
-    stroka = ob.stroka; stolbez = ob.stolbez;
+    stroka = ob.stroka; stolbez = ob.stolbez; deter = ob.deter; rang = ob.rang;
     mas = new double* [stroka];
     for (int i = 0; i < stroka; i++)
         mas[i] = new double[stolbez];
@@ -236,6 +337,7 @@ istream& operator >> (istream& str, Matrica& ob)
             str >> ob.mas[i][j];
         }
     }
+    ob.DeterGaus();
     return str;
 }
 
@@ -247,12 +349,3 @@ Matrica operator*(double l_ob, Matrica r_ob)
             tmp.mas[i][j] = r_ob.mas[i][j] * l_ob;
     return tmp;
 }
-
-
-
-
-
-
-/*1 2 3
-  4 5 6
-  7 8 9*/
