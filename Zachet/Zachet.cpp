@@ -1,6 +1,8 @@
 ﻿#include <iostream>
 using namespace std;
 
+const double eps = 1E-14;
+
 class Matrica 
 {
     int stroka, stolbez,rang;
@@ -263,6 +265,8 @@ public:
                     max = tmp.mas[i][j];
                     stroka_max = i;
                 }
+            if (max == 0)
+                continue;
             tmp.SwapStr(j, stroka_max);
             if (j != stroka_max)
                 tmp.deter *= -1;
@@ -272,6 +276,9 @@ public:
                 for (int k = 0; k < stolbez; k++)
                 {
                     tmp.mas[i][k] = tmp.mas[i][k] + tmp.mas[j][k] * number;
+                    //Замена величин порядка 1E-14 и меньше на нули
+                    if (tmp.mas[i][k] < eps)
+                        tmp.mas[i][k] = 0;
                 }
             }
         }
@@ -282,12 +289,10 @@ public:
 int main()
 {
     setlocale(LC_ALL, "Rus");
-    Matrica a(3, 3, 5);
+    Matrica a(-1, -1, 5);
     Matrica b(3, 3, 4);
-    cin >> b;
-    b.GetDeter();
-    cout << b;
-
+    cin >> a;
+    cout << a;
 }
 
 Matrica::Matrica(int stroka_, int stolbez_, int chislo)  // конструктор *начало
@@ -295,7 +300,7 @@ Matrica::Matrica(int stroka_, int stolbez_, int chislo)  // конструкто
     while ((stroka_ < 1) || (stolbez_ < 1)) // проверка на првильность значений строк/столбцов (отсев нулевых и отриц)
     {
         cout << "Некеррокетная размерность массива" << endl << "Введите число строк и столбцов";
-        cin >> stroka_, stolbez_;
+        cin >> stroka_ >> stolbez_;
     }
     try
     {
