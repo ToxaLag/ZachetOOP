@@ -1,7 +1,7 @@
 ﻿#include <iostream>
 using namespace std;
 
-const double eps = 1E-14;
+const double eps = 1E-10;
 
 class Matrica 
 {
@@ -268,30 +268,73 @@ public:
             if (max == 0)
                 continue;
             tmp.SwapStr(j, stroka_max);
-            if (j != stroka_max)
-                tmp.deter *= -1;
             for (int i = j+1; i < stroka; i++)
             {
                 number = -tmp.mas[i][j] / tmp.mas[j][j];
                 for (int k = 0; k < stolbez; k++)
                 {
                     tmp.mas[i][k] = tmp.mas[i][k] + tmp.mas[j][k] * number;
-                    //Замена величин порядка 1E-14 и меньше на нули
-                    if (tmp.mas[i][k] < eps)
+                    //Замена величин порядка 1E-11 и меньше на нули
+                    if (abs(tmp.mas[i][k]) < eps)
                         tmp.mas[i][k] = 0;
                 }
             }
         }
         return tmp;
     }
+
+    //Matrica Reverse()
+    //{
+    //    Matrica tmp(stroka, stolbez);
+    //    tmp = *this;
+    //    double chislo;
+    //    double number;
+    //    if ((tmp.deter == 0) || stroka != stolbez)
+    //    {
+    //        cout << "Обратной матрицы не существует" << endl;
+    //        return *this;
+    //    }
+    //    Matrica e(stroka, stolbez);
+    //    for (int i = 0; i < stroka; i++)
+    //        e.mas[i][i] = 1;
+    //    for (int d = 0; d < 2; d++)
+    //    {
+    //        for (int j = 0; j < stolbez; j++)
+    //        {
+    //            for (int i = j + 1; i < stroka; i++)
+    //            {
+    //                chislo = 1 / tmp.mas[j][j];
+    //                for (int k = 0; k < stolbez; k++)
+    //                {
+    //                    tmp.mas[i][k] *= chislo; e.mas[i][k] *= chislo;
+    //                }
+    //                number = -tmp.mas[i][j] / tmp.mas[j][j];
+    //                for (int k = 0; k < stolbez; k++)
+    //                {
+    //                    tmp.mas[i][k] = tmp.mas[i][k] + tmp.mas[j][k] * number;
+    //                    e.mas[i][k] = e.mas[i][k] + e.mas[j][k] * number;
+    //                    //Замена величин порядка 1E-11 и меньше на нули
+    //                    if (tmp.mas[i][k] < eps)
+    //                        tmp.mas[i][k] = 0;
+    //                    if (e.mas[i][k] < eps)
+    //                        e.mas[i][k] = 0;
+    //                    cout << e;
+    //                }
+    //            }
+    //        }
+    //        tmp = tmp.Tranpon();
+    //        e = e.Tranpon();
+    //    }
+    //    return e;
+    //}
 };
 
 int main()
 {
     setlocale(LC_ALL, "Rus");
-    Matrica a(-1, -1, 5);
-    Matrica b(3, 3, 4);
+    Matrica a(3, 3, 5);
     cin >> a;
+    a.GetDeter();
     cout << a;
 }
 

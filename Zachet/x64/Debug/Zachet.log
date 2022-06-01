@@ -1,3 +1,4 @@
 ﻿  Zachet.cpp
-C:\Users\toxal\source\repos\Zachet\Zachet\Zachet.cpp(388): warning C4172: возвращение адреса локальной или временной переменной : tmp
+C:\Users\toxal\source\repos\Zachet\Zachet\Zachet.cpp(432): warning C4172: возвращение адреса локальной или временной переменной : tmp
+C:\Users\toxal\source\repos\Zachet\Zachet\Zachet.cpp(228): warning C4172: возвращение адреса локальной или временной переменной : tmp
   Zachet.vcxproj -> C:\Users\toxal\source\repos\Zachet\x64\Debug\Zachet.exe
