@@ -54,7 +54,7 @@ class Matrica
 
     bool ZeroCheck(int i_) //для строк
     {
-        for (int j = 0; j < stroka; j++)
+        for (int j = 0; j < stolbez; j++)
             if (mas[i_][j] != 0)
                 return true;
         return false;
