@@ -178,7 +178,8 @@ public:
             for (int i = 0; i < this->stroka; i++)
                 for(int j = 0; j < this->stolbez; j++)
                     if (this->mas[i][j] != r_ob.mas[i][j])
-                        return true;
+                        return false;
+            return true
         }
         return false;
     }
